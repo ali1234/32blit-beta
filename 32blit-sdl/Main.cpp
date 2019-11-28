@@ -336,6 +336,14 @@ int main(int argc, char *argv[]) {
 	}
 	SDL_SetWindowMinimumSize(window, SYSTEM_WIDTH, SYSTEM_HEIGHT);
 
+	SDL_GameControllerAddMapping(
+		"030000005e0400008902000021010000,Classic XBOX Controller,"
+		"a:b0,b:b1,y:b4,x:b3,start:b7,guide:,back:b6,leftstick:b8,"
+		"rightstick:b9,dpup:h0.1,dpleft:h0.8,dpdown:h0.4,dpright:h0.2,"
+		"leftx:a0,lefty:a1,rightx:a3,righty:a4,lefttrigger:a2,"
+		"righttrigger:a5,leftshoulder:b5,rightshoulder:b2,"
+	);
+
 	// Open all joysticks as game controllers
 	for(int n=0; n<SDL_NumJoysticks(); n++) {
 		SDL_GameControllerOpen(n);

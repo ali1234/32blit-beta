@@ -1,9 +1,7 @@
 #if defined(_WIN32) && !defined(WIN32)
 #define WIN32
 #endif
-#ifndef NO_FFMPEG_CAPTURE
-#include "VideoCapture.hpp"
-#endif
+
 #include <SDL.h>
 #include <random>
 #include <cmath>
@@ -16,6 +14,7 @@
 
 #include "engine/input.hpp" // Only needed for button definitions
 #include "System.hpp"
+#include "VideoCapture.hpp"
 
 #define WINDOW_TITLE "TinyDebug SDL"
 
@@ -90,10 +89,8 @@ SDL_Renderer* renderer;
 SDL_Texture* __fb_texture_RGB24;
 SDL_Texture* __ltdc_texture_RGB565;
 
-#ifndef NO_FFMPEG_CAPTURE
 SDL_Texture* recorder_target;
-uint8_t recorder_buffer[SYSTEM_WIDTH*2 * SYSTEM_HEIGHT*2 * 3];
-#endif
+Uint8 recorder_buffer[SYSTEM_WIDTH*2 * SYSTEM_HEIGHT*2 * 3];
 
 typedef struct vector2d {
 	double x;
@@ -146,7 +143,6 @@ void system_redraw(System *sys) {
 	SDL_RenderCopy(renderer, which, NULL, &renderer_dest);
 	SDL_RenderPresent(renderer);
 
-#ifndef NO_FFMPEG_CAPTURE
 	if (recording) {
 		SDL_SetRenderTarget(renderer, recorder_target);
 		SDL_RenderClear(renderer);
@@ -154,7 +150,6 @@ void system_redraw(System *sys) {
 		SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGB24, &recorder_buffer, 320*3);
 		capture();
 	}
-#endif
 }
 
 
@@ -221,9 +216,7 @@ void resize_renderer(int sizeX, int sizeY) {
 
 	__fb_texture_RGB24 = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SYSTEM_WIDTH, SYSTEM_HEIGHT);
 	__ltdc_texture_RGB565 = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_TARGET, SYSTEM_WIDTH * 2, SYSTEM_HEIGHT * 2);
-#ifndef NO_FFMPEG_CAPTURE
 	recorder_target = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_TARGET, SYSTEM_WIDTH*2, SYSTEM_HEIGHT*2);
-#endif
 
 	std::cout << "Textured recreated" << std::endl;
 
@@ -328,7 +321,6 @@ int main(int argc, char *argv[]) {
 						case SDLK_LCTRL:
 							left_ctrl = event.type == SDL_KEYDOWN;
 							break;
-#ifndef NO_FFMPEG_CAPTURE
 						case SDLK_r:
 							if (event.type == SDL_KEYDOWN && SDL_GetTicks() - last_record_startstop > 1000) {
 								if (!recording) {
@@ -337,8 +329,11 @@ int main(int argc, char *argv[]) {
 									filename << "-";
 									filename << "capture-";
 									filename << getTimeStamp().c_str();
-									filename << ".mkv";
-									open_stream(filename.str().c_str(), SYSTEM_WIDTH*2, SYSTEM_HEIGHT*2, AV_PIX_FMT_RGB24, recorder_buffer);
+									filename << ".mpg";
+									if (open_stream(filename.str().c_str(), SYSTEM_WIDTH*2, SYSTEM_HEIGHT*2, recorder_buffer)) {
+										std::cout << "Could not start capture." << std::endl;
+										break;
+									}
 									recording = true;
 									std::cout << "Starting capture to " << filename.str() << std::endl;
 								}
@@ -350,7 +345,6 @@ int main(int argc, char *argv[]) {
 								}
 								last_record_startstop = SDL_GetTicks();
 							}
-#endif
 						}
 					} else {
 						sys->set_button(iter->second, event.type == SDL_KEYDOWN);
@@ -419,15 +413,12 @@ int main(int argc, char *argv[]) {
 	sys->stop();
 	delete sys;
 
-
-#ifndef NO_FFMPEG_CAPTURE
 	if (recording) {
 		recording = false;
 		close_stream();
 		std::cout << "Finished capture." << std::endl;
 	}
 	SDL_DestroyTexture(recorder_target);
-#endif
 
 	SDL_DestroyTexture(__ltdc_texture_RGB565);
 	SDL_DestroyTexture(__fb_texture_RGB24);

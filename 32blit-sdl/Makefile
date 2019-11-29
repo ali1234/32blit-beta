@@ -60,7 +60,7 @@ OUTPUT_NAME = $(shell basename $(PROJECT))
 SDL_LIBS = `sdl2-config --libs`
 
 # Glom all .cpp files from the testbed
-TESTBED_SRC_FILES := $(TESTBED)/Main.cpp $(TESTBED)/System.cpp
+TESTBED_SRC_FILES := $(TESTBED)/Main.cpp $(TESTBED)/System.cpp $(TESTBED)/VideoCapture.cpp
 
 # Glom all .cpp files from our desired project
 PROJECT_SRC_FILES := $(wildcard $(PROJECT)/*.cpp)
@@ -71,10 +71,9 @@ CXXFLAGS +=
 
 # Handle requirements for FFMPEG if it's enabled
 ifeq ($(ENABLE_FFMPEG), true)
-FFMPEG_LIBS = -Wl,-Bstatic -lavformat -lavcodec -lavdevice -lavfilter -lavutil -lswresample -lswscale -Wl,-Bdynamic -llzma -lz
+FFMPEG_LIBS = -lavformat -lavcodec -lavdevice -lavfilter -lavutil -lswresample -lswscale -Wl,-Bdynamic -llzma -lz
 LDFLAGS +=  -L$(FFMPEG)/lib $(FFMPEG_LIBS)
 CPPFLAGS +=  -I$(FFMPEG)/include
-TESTBED_SRC_FILES += $(TESTBED)/VideoCapture.cpp
 else
 FFMPEG_LIBS = 
 CPPFLAGS += -DNO_FFMPEG_CAPTURE

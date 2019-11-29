@@ -32,6 +32,8 @@
 #include <string.h>
 #include <math.h>
 
+#ifndef NO_FFMPEG_CAPTURE
+
 extern "C" {
 #include <libavutil/avassert.h>
 #include <libavutil/channel_layout.h>
@@ -527,15 +529,16 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
 /* media file output */
 
 //int main(int argc, char **argv)
-int open_stream(const char *filename, int width, int height, AVPixelFormat src_fmt, uint8_t *pic_src) {
+int open_stream(const char *filename, int width, int height, void *pic_src) {
 
 	AVOutputFormat *fmt;
 	AVCodec *audio_codec = NULL, *video_codec = NULL;
 	int ret;
 	AVDictionary *opt = NULL;
+	AVPixelFormat src_fmt = AV_PIX_FMT_RGB24;
 
 	source_format = src_fmt;
-	picture_source = pic_src;
+	picture_source = (uint8_t *)pic_src;
 	source_width = width;
 	source_height = height;
 
@@ -635,3 +638,32 @@ int close_stream(void) {
 	avformat_free_context(oc);
 	return 0;
 }
+
+#else
+
+FILE *videofile;
+void *data;
+int w, h;
+
+int open_stream(const char *filename, int width, int height, void *picture_source) {
+	data = picture_source;
+	w = width;
+	h = height;
+    char cmd[1024];
+    snprintf(cmd, 1024, "ffmpeg -f rawvideo -pix_fmt rgb24 -s %dx%d -r %d -y -an -i - -b 8000k %s", width, height, 50, filename);
+    videofile = popen(cmd, "w");
+    if (!videofile) {
+    	return -1;
+    }
+    return 0;
+}
+
+int close_stream(void) {
+	fclose(videofile);
+}
+
+int capture(void) {
+	fwrite(data, w*h, 3, videofile);
+}
+
+#endif

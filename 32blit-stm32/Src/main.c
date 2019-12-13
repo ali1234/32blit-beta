@@ -109,7 +109,9 @@ int main(void)
   MX_DMA_Init();
   MX_TIM4_Init();
   MX_TIM3_Init();
+#ifndef ALI1234
   MX_DAC1_Init();
+#endif
   MX_HRTIM_Init();
   MX_I2C4_Init();
   MX_LTDC_Init();
@@ -120,11 +122,15 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI4_Init();
   MX_TIM6_Init();
+#ifndef ALI1234
   MX_TIM15_Init();
   MX_FATFS_Init();
+#endif
   //MX_DMA2D_Init();
   MX_RNG_Init();
+#ifndef ALI1234
   MX_USB_DEVICE_Init();
+#endif
   /* USER CODE BEGIN 2 */
   blit_clear_framebuffer();
   blit_init();
@@ -135,12 +141,14 @@ int main(void)
   uint32_t total_samples = 0;
   FIL audio_file;
   bool audio_file_available = false;
+#ifndef ALI1234
   if (blit_mount_sd(sd_card_label, freespace, totalspace)) {
     audio_file_available = blit_open_file(audio_file, "u8mono16.raw");
     if(audio_file_available){
       blit_enable_dac();
     }
   }
+#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -151,9 +159,12 @@ int main(void)
 
     // TODO: this is really just experimental code and should
     // be removed in favour of generic sound support
+
+#ifndef ALI1234
     if(audio_file_available && blit_sd_detected()){
       total_samples += blit_update_dac(&audio_file);
     }
+#endif
 
     blit_tick();
 

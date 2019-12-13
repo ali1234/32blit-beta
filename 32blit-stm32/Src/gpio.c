@@ -53,6 +53,16 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
+#ifdef ALI1234
+  // software 3V3 enable
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+#endif
+
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(AMP_SHUTDOWN_GPIO_Port, AMP_SHUTDOWN_Pin, GPIO_PIN_RESET);
 
@@ -97,10 +107,6 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(LCD_RESET_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = JOYSTICK_BUTTON_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(JOYSTICK_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB12 PB14 PB15 */
   GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_14|GPIO_PIN_15;
@@ -110,12 +116,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF12_OTG2_FS;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PB13 (USB_OTG_HS_VBUS) */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = USB_SWAP_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -123,15 +123,31 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(USB_SWAP_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PDPin PDPin PDPin PDPin 
-                           PDPin PDPin PDPin PDPin 
-                           PDPin PDPin */
-  GPIO_InitStruct.Pin = DPAD_UP_Pin|DPAD_LEFT_Pin|DPAD_DOWN_Pin|DPAD_RIGHT_Pin 
-                          |BUTTON_X_Pin|BUTTON_Y_Pin|BUTTON_A_Pin|BUTTON_B_Pin 
-                          |BUTTON_MENU_Pin|BUTTON_HOME_Pin;
+  /* Input pins */
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = DPAD_UP_Pin;
+  HAL_GPIO_Init(DPAD_UP_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = DPAD_DOWN_Pin;
+  HAL_GPIO_Init(DPAD_DOWN_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = DPAD_LEFT_Pin;
+  HAL_GPIO_Init(DPAD_LEFT_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = DPAD_RIGHT_Pin;
+  HAL_GPIO_Init(DPAD_RIGHT_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = BUTTON_A_Pin;
+  HAL_GPIO_Init(BUTTON_A_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = BUTTON_B_Pin;
+  HAL_GPIO_Init(BUTTON_B_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = BUTTON_X_Pin;
+  HAL_GPIO_Init(BUTTON_X_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = BUTTON_Y_Pin;
+  HAL_GPIO_Init(BUTTON_Y_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = BUTTON_HOME_Pin;
+  HAL_GPIO_Init(BUTTON_HOME_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = BUTTON_MENU_Pin;
+  HAL_GPIO_Init(BUTTON_MENU_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = JOYSTICK_BUTTON_Pin;
+  HAL_GPIO_Init(JOYSTICK_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = SD_DETECT_Pin;

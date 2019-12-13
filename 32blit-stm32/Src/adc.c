@@ -77,7 +77,8 @@ void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
-  /** Configure Regular Channel 
+#ifndef ALI1234
+  /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_10;
   sConfig.Rank = ADC_REGULAR_RANK_2;
@@ -85,15 +86,16 @@ void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+#else
   /** Configure Regular Channel 
   */
-  /*sConfig.Channel = ADC_CHANNEL_8;
-  sConfig.Rank = ADC_REGULAR_RANK_3;
+  sConfig.Channel = ADC_CHANNEL_8;
+  sConfig.Rank = ADC_REGULAR_RANK_2;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
-  }*/
-
+  }
+#endif
 }
 /* ADC3 init function */
 void MX_ADC3_Init(void)
@@ -201,9 +203,11 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(USER_LEFT1_GPIO_Port, &GPIO_InitStruct);
 
+#ifndef ALI1234
     HAL_SYSCFG_AnalogSwitchConfig(SYSCFG_SWITCH_PC2, SYSCFG_SWITCH_PC2_OPEN);
 
     HAL_SYSCFG_AnalogSwitchConfig(SYSCFG_SWITCH_PC3, SYSCFG_SWITCH_PC3_OPEN);
+#endif
 
   /* USER CODE BEGIN ADC3_MspInit 1 */
 

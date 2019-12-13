@@ -108,7 +108,9 @@ int main(void)
   MX_DMA_Init();
   MX_TIM4_Init();
   MX_TIM3_Init();
+#ifndef ALI1234
   MX_DAC1_Init();
+#endif
   MX_HRTIM_Init();
   MX_I2C4_Init();
   MX_LTDC_Init();
@@ -119,7 +121,9 @@ int main(void)
   MX_SPI1_Init();
   MX_SPI4_Init();
   MX_TIM6_Init();
+#ifndef ALI1234
   MX_TIM15_Init();
+#endif
   MX_FATFS_Init();
   //MX_DMA2D_Init();
 

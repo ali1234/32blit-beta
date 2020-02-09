@@ -53,7 +53,7 @@ void DFUBoot(void)
 {
   // Set the special magic word value that's checked by the assembly entry Point upon boot
   // This will trigger a jump into DFU mode upon reboot
-  *((uint32_t *)0x2001FFFC) = 0xCAFEBABE; // Special Key to End-of-RAM
+  _system_boot = 0xCAFEBABE; // Special Key to End-of-RAM
 
   SCB_CleanDCache();
   NVIC_SystemReset();

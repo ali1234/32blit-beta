@@ -2,6 +2,10 @@
 #include "32blit.hpp"
 #include "fatfs.h"
 
+// System boot variables at top of RAM
+extern uint32_t _system_boot;
+extern uint32_t _user_boot;
+
 // Functions defined by user code files
 extern void init();
 extern void update(uint32_t time);

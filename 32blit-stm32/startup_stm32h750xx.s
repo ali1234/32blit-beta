@@ -92,7 +92,7 @@ LoopFillZerobss:
 
   
 /* check for magic number and branch to DFuSe */
-  ldr r0, =0x2001FFFC // Magic RAM location for sekret reboot key
+  ldr r0, =_system_boot // Magic RAM location for sekret reboot key
   ldr r1, =0xCAFEBABE // Sekret reboot key value
   ldr r2, [r0, #0]
   cmp r1, r2

@@ -30,6 +30,7 @@
 #include "rng.h"
 #include "spi.h"
 #include "tim.h"
+#include "usart.h"
 #include "usb_device.h"
 
 #include "gpio.hpp"
@@ -117,7 +118,7 @@ int main(void)
   sound::init();
 
   //MX_GPIO_Init();
-
+  MX_UART4_Init();
   MX_DMA_Init();
   MX_TIM4_Init();
   MX_TIM3_Init();
@@ -239,7 +240,7 @@ void SystemClock_Config(void)
                               |RCC_PERIPHCLK_RNG|RCC_PERIPHCLK_SPI4
                               |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_ADC
                               |RCC_PERIPHCLK_I2C4|RCC_PERIPHCLK_USB
-                              |RCC_PERIPHCLK_QSPI;
+                              |RCC_PERIPHCLK_QSPI|RCC_PERIPHCLK_UART4;
   PeriphClkInitStruct.PLL2.PLL2M = 4;
   PeriphClkInitStruct.PLL2.PLL2N = 9;
   PeriphClkInitStruct.PLL2.PLL2P = 1;
@@ -264,6 +265,7 @@ void SystemClock_Config(void)
   PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1;
   PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   PeriphClkInitStruct.Hrtim1ClockSelection = RCC_HRTIM1CLK_CPUCLK;
+  PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();

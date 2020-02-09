@@ -9,6 +9,7 @@
 #include "usbd_cdc_if.h"
 
 extern USBD_HandleTypeDef hUsbDeviceHS;
+extern UART_HandleTypeDef huart4;
 
 bool g_bConsumerConnected = true;
 
@@ -29,8 +30,10 @@ extern "C" // C linkage because we are compiling c files with a c++ compiler
 	  {
 	    USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceHS.pClassData;
 	    g_bConsumerConnected = !(hcdc->TxState != 0);
-    }
-		return len;
+      }
+
+      HAL_UART_Transmit(&huart4, (uint8_t *) ptr, len, HAL_MAX_DELAY);
+	  return len;
 	}
 }
 

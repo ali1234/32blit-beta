@@ -87,7 +87,8 @@ namespace gpio {
     init_pin(GPIOC, USER_RIGHT2_Pin, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL); // right digital
     
     // "gpio" pin on extension header
-    init_pin(GPIOC, EXTENSION_GPIO_Pin, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL); // left digital
+    //init_pin(GPIOC, EXTENSION_GPIO_Pin, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL); // digital input
+    init_pin(GPIOC, EXTENSION_GPIO_Pin, GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_LOW, GPIO_AF8_UART4);
 
     // vibration motor
     init_pin(GPIOB, VIBE_EN_Pin, GPIO_MODE_AF_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_VERY_HIGH,  GPIO_AF2_TIM4);

@@ -147,6 +147,11 @@ int main(void)
   qspi_init();
 #endif
 
+  if (_system_boot == 0xDEADBEEF) {
+      _system_boot = 0;
+      blit_switch_execution();
+  }
+
   blit_init();
 
   // add CDC handler to reset device on receiving "_RST"
